@@ -215,15 +215,18 @@ ToyarocK<!DOCTYPE html>
 </section>
 
 <section id="contact" class="section">
-    <div class="container">
-        <h2>Contact</h2>
-        <form name="contact" method="POST" netlify>
-            <input type="text" name="name" placeholder="お名前" required>
-            <input type="email" name="email" placeholder="メールアドレス" required>
-            <textarea name="message" placeholder="お問い合わせ内容" required></textarea>
-            <button type="submit">送信</button>
-        </form>    </div>
-  
+  <div class="container">
+      <h2>Contact</h2>
+      <form name="contact" method="POST" netlify id="contactForm">
+        <input type="text" name="name" placeholder="お名前" required>
+        <input type="email" name="email" placeholder="メールアドレス" required>
+        <textarea name="message" placeholder="お問い合わせ内容" required></textarea>
+        <button type="submit">送信</button>
+        <div id="successMessage" style="display: none; color: green; margin-top: 10px;">
+          送信完了しました。ありがとうございます！
+        </div>
+      </form>
+    </div> 
 </section>
 
 <footer class="footer">
@@ -241,6 +244,30 @@ let index = 0;
 const SLIDE_TIME = 7000;
 
 let timer;
+
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  // フォームデータを送信
+  const formData = new FormData(this);
+  
+  fetch('/', {
+    method: 'POST',
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(formData).toString()
+  })
+  .then(() => {
+    // 送信成功時
+    document.getElementById('contactForm').reset(); // フォームをリセット
+    document.getElementById('successMessage').style.display = 'block'; // メッセージ表示
+    
+    // 3秒後にメッセージを非表示（オプション）
+    setTimeout(() => {
+      document.getElementById('successMessage').style.display = 'none';
+    }, 3000);
+  })
+  .catch(error => console.error('Error:', error));
+});
 
 /* スライド更新 */
 function updateSlide() {
